@@ -35,7 +35,7 @@ jobs:
           image: ${{ matrix.container }}
           options: |
             --platform linux/${{ matrix.arch }}
-            --env R_LIBS_USER=${{ github.token }}
+            --env GH_TOKEN=${{ github.token }}
           run: |
             apt-get update && apt-get -y install eepm git github-cli rpm-build
             epm update
