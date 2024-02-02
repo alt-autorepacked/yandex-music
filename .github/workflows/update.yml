@@ -16,19 +16,27 @@ jobs:
         container: 
           - alt:sisyphus
           - alt:p10
+        arch:
+          - amd64
+          - arm64
     runs-on: ubuntu-latest
-    container:
-      image: ${{ matrix.container }}
     steps:
-      - name: install packages
-        run: |
-          apt-get update && apt-get -y install eepm git github-cli rpm-build
-          epm update
-    
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Repack
-        run: |
-          ./repack.sh
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: ${{ matrix.arch }}
+
+      - name: Run the repack process with Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ matrix.container }}
+          options: |
+            --platform linux/${{ matrix.container }}
+            --env R_LIBS_USER=${{ github.token }}
+          run: |
+            apt-get update && apt-get -y install eepm git github-cli rpm-build
+            epm update
+            ./repack.sh
