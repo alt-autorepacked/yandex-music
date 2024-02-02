@@ -38,6 +38,8 @@ jobs:
             --volume ${{ github.workspace }}/:/workspace
             --env GH_TOKEN=${{ github.token }}
           run: |
+            cd /workspace
+            ls
             apt-get update && apt-get -y install eepm git github-cli rpm-build
             epm update
             ./repack.sh
