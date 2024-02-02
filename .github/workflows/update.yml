@@ -13,33 +13,14 @@ jobs:
   check-versions:
     strategy:
       matrix:
-        container: 
-          - alt:sisyphus
-          - alt:p10
+        branch:
+          - sisyphus
+          - p10
         arch:
           - amd64
           - arm64
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: ${{ matrix.arch }}
-
-      - name: Run the repack process with Docker
-        uses: addnab/docker-run-action@v3
-        with:
-          image: ${{ matrix.container }}
-          options: |
-            --platform linux/${{ matrix.arch }}
-            --volume ${{ github.workspace }}/:/workspace
-            --env GH_TOKEN=${{ github.token }}
-          run: |
-            cd /workspace
-            ls
-            apt-get update && apt-get -y install eepm git github-cli rpm-build
-            epm update
-            ./repack.sh
+    uses: alt-autorepacked/common/.github/workflows/update.yml@main
+    with:
+      branch: ${{ matrix.branch }}
+      arch: ${{ matrix.arch }}
+    
