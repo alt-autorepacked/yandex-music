@@ -1,25 +1,23 @@
 #!/bin/sh
 
-epm tool eget https://raw.githubusercontent.com/alt-autorepacked/common/v0.3.0/common.sh
+COMMON_VERSION="0.4.0"
+
+epm tool eget https://raw.githubusercontent.com/alt-autorepacked/common/v$COMMON_VERSION/common.sh
 . ./common.sh
 # . ../common/common.sh
 
 _package="yandex-music"
-_repo="cucumber-sp/yandex-music-linux"
+
 arch="$(epm print info --debian-arch)"
-_suffix="*_$arch.deb"
 
-_download() {
-    url=$(epm tool eget --list --latest https://github.com/$_repo/releases "$_suffix")
-    real_download_url=$(epm tool eget --get-real-url $url)
-    epm -y repack $real_download_url
-}
+GITHUB_REPO="cucumber-sp/yandex-music-linux"
+GITHUB_SUFFIX="*_$arch.deb"
 
-download_version=$(_check_version_from_github $_repo "$_suffix")
+download_version=$(_check_version_from_github)
 remote_version=$(_check_version_from_remote)
 
 if [ "$remote_version" != "$download_version" ]; then
-    _download
+    _download_from_github
     _add_repo_suffix
     TAG="v$download_version"
     _create_release
