@@ -9,8 +9,8 @@ rm common.sh
 
 _package="yandex-music"
 
-epm install asar --auto
-cp yandex-music.sh /etc/eepm/repack.d/yandex-music.sh
+# epm install asar --auto
+# cp yandex-music.sh /etc/eepm/repack.d/yandex-music.sh
 
 arch="$(epm print info --debian-arch)"
 
